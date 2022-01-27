@@ -1,0 +1,29 @@
+image:
+  file: .gitpod.Dockerfile
+tasks:
+  - name: Setup KubeConfig
+    command: mkdir -p ~/.kube && curl https://gist.githubusercontent.com/jaxxstorm/60c03b378a4acc636a9af9a6c6180bcd/raw/a851da195f5941243a87eeeef19823f67c009293/config -o ~/.kube/config
+  - name: Start Docker Daemon
+    command: sudo docker-up &
+  - before: "echo 'export PIP_USER=no' >> ~/.bashrc && export PIP_USER=no"
+    name: Use Pulumi
+    command: pulumi version
+  - before: "echo 'export PIP_USER=no' >> ~/.bashrc && export PIP_USER=no"
+    name: Use Azure 
+    command: brew install azure-cli
+  - name: Use app smith
+    command: sudo docker-compose up -d && docker logs -f appsmith
+
+ports:
+  - port: 5000
+    onOpen: ignore
+
+github:
+  prebuilds:
+    master: true
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addCheck: true
+    addComment: true
+    addBadge: false
